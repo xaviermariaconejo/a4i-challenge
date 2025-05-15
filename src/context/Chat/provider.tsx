@@ -1,13 +1,16 @@
 import { useState, useEffect, type PropsWithChildren, type FC } from "react";
 
 import { useGetMessages } from "../../api/messages/get/hook";
-import { AGENT_MESSAGE, type Message, USER_MESSAGE } from "../../types/Message";
-import { socket } from "../../socket";
-import { SOCKET_EVENT_TYPES, SOCKET_EVENTS } from "../../socket/constants";
+import { useMutationMessages } from "../../api/messages/post/hook";
+import { AGENT_MESSAGE, type Message } from "../../types/Message";
 import { type ChatContextType, ChatContext } from "./context";
+import { useSocket } from "../Socket/hook";
+import { SOCKET_EVENT_TYPES, SOCKET_EVENTS } from "../Socket/constants";
 
 export const ChatProvider: FC<PropsWithChildren> = ({ children }) => {
+  const { socket } = useSocket();
   const { data, error: fetchError, isLoading } = useGetMessages();
+  const { mutate } = useMutationMessages();
   const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
@@ -69,21 +72,18 @@ export const ChatProvider: FC<PropsWithChildren> = ({ children }) => {
       socket.off(SOCKET_EVENTS.RECEIVE_MESSAGE, handleStream);
       socket.off(SOCKET_EVENTS.RECEIVE_MESSAGE, handleStreamDone);
     };
-  }, []);
+  }, [socket]);
 
-  const sendMessage: ChatContextType["sendMessage"] = (content) => {
+  const sendMessage: ChatContextType["sendMessage"] = async (content) => {
     const text = content.trim();
     if (!text) return;
 
-    /*
-    Caution: Inconsistency between FE & BE with messages ids.
-             Since BE does not store the user messages.
-    */
-    const message = {
-      id: messages.length + 1,
-      content: text,
-      type: USER_MESSAGE,
-    };
+    const message = await mutate({ content: text });
+
+    if (!message) {
+      throw new Error("Error: send message error on add new message to Server");
+    }
+
     socket.emit(SOCKET_EVENTS.SEND_MESSAGE, message);
     setMessages((prev) => [...prev, message]);
   };

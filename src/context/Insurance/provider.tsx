@@ -1,15 +1,16 @@
 import { useState, useEffect, type PropsWithChildren, type FC } from "react";
 
-import { socket } from "../../socket";
-import {
-  SOCKET_ACTION_TYPES,
-  SOCKET_EVENT_TYPES,
-  SOCKET_EVENTS,
-} from "../../socket/constants";
 import type { Insurance } from "../../types/Insurance";
 import { InsuranceContext } from "./context";
+import {
+  SOCKET_EVENT_TYPES,
+  SOCKET_ACTION_TYPES,
+  SOCKET_EVENTS,
+} from "../Socket/constants";
+import { useSocket } from "../Socket/hook";
 
 export const InsuranceProvider: FC<PropsWithChildren> = ({ children }) => {
+  const { socket } = useSocket();
   const [insurance, setInsurance] = useState<Insurance | null>(null);
 
   useEffect(() => {
@@ -18,7 +19,6 @@ export const InsuranceProvider: FC<PropsWithChildren> = ({ children }) => {
       action?: string;
       payload?: Insurance;
     }) => {
-      console.log("DEBUGGER", payload);
       if (
         payload.type !== SOCKET_EVENT_TYPES.ACTION ||
         !payload.action ||
@@ -35,7 +35,7 @@ export const InsuranceProvider: FC<PropsWithChildren> = ({ children }) => {
     return () => {
       socket.off(SOCKET_EVENTS.RECEIVE_MESSAGE, handleAction);
     };
-  }, []);
+  }, [socket]);
 
   return (
     <InsuranceContext.Provider

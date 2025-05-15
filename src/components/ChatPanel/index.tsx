@@ -13,11 +13,11 @@ export const ChatPanel: FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+    <div className="flex flex-col flex-1 bg-white dark:bg-gray-800 rounded-lg shadow p-4">
       <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
         Real-time Chat
       </h2>
-      <div className="flex-1 flex flex-col overflow-y-auto gap-2 mb-4">
+      <div className="flex-1 flex flex-col gap-2 mb-4">
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -37,7 +37,7 @@ export const ChatPanel: FC = () => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           className="flex-1 rounded-l border border-gray-300 dark:border-gray-600 px-3 py-2 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary focus:border-primary"
-          placeholder="Escribe un mensaje..."
+          placeholder="Type a message..."
         />
         <button
           type="submit"
