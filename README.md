@@ -1,5 +1,10 @@
 # React + TypeScript + TailwindCSS + Vite
 
+### Installation
+```bash
+npm ci
+```
+
 ### To try this project
 
 ```bash
