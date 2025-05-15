@@ -1,1 +1,1 @@
-export const ENDPOINT = "/messages";
+export const MESSAGES_ENDPOINT = "/messages";

@@ -1,27 +1,25 @@
-import { screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { screen, fireEvent, act } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+
+import { renderWithProviders } from "../../tests/render";
+import { APP_NAME } from "../../config/constants";
 
 import { Header } from "./index";
-import { renderWithProviders } from "../../tests/render";
 
 describe("Header component", () => {
   it("renders the default title", () => {
     renderWithProviders(<Header />);
-    expect(
-      screen.getByRole("heading", { name: /A4I Challenge/i })
-    ).toBeInTheDocument();
-  });
-
-  it("renders a custom title when provided", () => {
-    const customTitle = "My App";
-    renderWithProviders(<Header title={customTitle} />);
-    expect(
-      screen.getByRole("heading", { name: customTitle })
-    ).toBeInTheDocument();
+    act(() => {
+      vi.advanceTimersToNextTimer();
+    });
+    expect(screen.getByRole("heading", { name: APP_NAME })).toBeInTheDocument();
   });
 
   it("opens and closes the Settings modal", () => {
     renderWithProviders(<Header />);
+    act(() => {
+      vi.advanceTimersToNextTimer();
+    });
     expect(screen.queryByText("Settings")).not.toBeInTheDocument();
 
     const openButton = screen.getByRole("button", { name: /open settings/i });
@@ -35,7 +33,7 @@ describe("Header component", () => {
     fireEvent.click(closeButton);
 
     expect(
-      screen.queryByRole("header", { name: "Settings" })
+      screen.queryByRole("heading", { name: "Settings" })
     ).not.toBeInTheDocument();
   });
 });

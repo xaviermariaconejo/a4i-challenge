@@ -1,13 +1,12 @@
 import { useCallback, useState } from "react";
 
-import { useApi } from "../../../context/Api/hook";
 import type { Message } from "../../../types/Message";
-
-import { updateMessages } from "./fetch";
+import { useAuthenticatedFetch } from "../../../hooks/useAuthenticatedFetch";
+import { MESSAGES_ENDPOINT } from "../constants";
 
 // TODO: Use React Query
 export function useMutationMessages() {
-  const { key } = useApi();
+  const authFetch = useAuthenticatedFetch();
   const [data, setData] = useState<Message | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -17,8 +16,9 @@ export function useMutationMessages() {
       setIsLoading(true);
       setError(null);
       try {
-        const data = await updateMessages(message, {
-          headers: { "x-api-key": key },
+        const data = await authFetch(MESSAGES_ENDPOINT, {
+          method: "POST",
+          body: JSON.stringify(message),
         });
         setData(data);
         return data;
@@ -30,7 +30,7 @@ export function useMutationMessages() {
         setIsLoading(false);
       }
     },
-    [key]
+    [authFetch]
   );
 
   return { data, isLoading, error, mutate };

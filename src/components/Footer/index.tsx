@@ -1,11 +1,13 @@
 import type { FC } from "react";
 
+import { APP_NAME } from "../../config/constants";
+
 export const Footer: FC = () => {
   return (
     <footer className="bg-primary-dark text-white py-6">
       <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-center">
         <span className="text-sm">
-          © {new Date().getFullYear()} A4I Challenge. All rights reserved.
+          © {new Date().getFullYear()} {APP_NAME}. All rights reserved.
         </span>
 
         {/* TODO: Add react router dom to fulfill that */}

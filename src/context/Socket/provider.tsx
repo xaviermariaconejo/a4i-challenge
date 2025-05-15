@@ -11,7 +11,7 @@ import { SOCKET_URL } from "./constants";
 import { SocketContext } from "./context";
 import { useApi } from "../Api/hook";
 import { Error } from "../../pages/Error";
-import { SERVER_URL } from "../../config/constants";
+import { HEADER_API_KEY, SERVER_URL } from "../../config/constants";
 
 export const SocketProvider: FC<PropsWithChildren> = ({ children }) => {
   const { key } = useApi();
@@ -21,7 +21,7 @@ export const SocketProvider: FC<PropsWithChildren> = ({ children }) => {
     setIsLoading(true);
     return io(SERVER_URL, {
       path: SOCKET_URL,
-      extraHeaders: { "x-api-key": key },
+      extraHeaders: { [HEADER_API_KEY]: key },
     });
   }, [key]);
 

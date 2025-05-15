@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { useApi } from "../../../context/Api/hook";
 import type { Message } from "../../../types/Message";
-
-import { getMessages } from "./fetch";
+import { useAuthenticatedFetch } from "../../../hooks/useAuthenticatedFetch";
+import { MESSAGES_ENDPOINT } from "../constants";
 
 // TODO: Use React Query
 export function useGetMessages() {
-  const { key } = useApi();
+  const authFetch = useAuthenticatedFetch();
   const [data, setData] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -16,7 +15,7 @@ export function useGetMessages() {
     setIsLoading(true);
     setError(null);
     try {
-      const data = await getMessages({ headers: { "x-api-key": key } });
+      const data = await authFetch(MESSAGES_ENDPOINT);
       setData(data);
     } catch (err) {
       console.error(err);
@@ -24,7 +23,7 @@ export function useGetMessages() {
     } finally {
       setIsLoading(false);
     }
-  }, [key]);
+  }, [authFetch]);
 
   useEffect(() => {
     fetch();
