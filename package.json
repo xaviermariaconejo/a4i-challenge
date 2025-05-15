@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "install:all": "npm ci && npm --prefix backend ci",
     "dev": "vite",
     "backend:dev": "npm --prefix backend run start",
     "build": "tsc -b && vite build",

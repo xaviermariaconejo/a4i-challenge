@@ -2,7 +2,7 @@
 
 ### Installation
 ```bash
-npm ci
+npm run install:all
 ```
 
 ### To try this project
